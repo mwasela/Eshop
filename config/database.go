@@ -15,6 +15,14 @@ func ConnectDatabase() {
 
 	err = database.AutoMigrate(
 		&models.User{},
+		&models.Category{},
+		&models.Customers{},
+		&models.Inventory{},
+		&models.OrderItem{},
+		&models.Pricelist{},
+		&models.Product{},
+		&models.SalesOrder{},
+		&models.Supplier{},
 	)
 
 	if err != nil {
