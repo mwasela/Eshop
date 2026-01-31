@@ -33,12 +33,15 @@ func CreatePriceListItem(c *gin.Context) {
 		return
 	}
 	
+	// Reload price list item with product and category
+	config.DB.Preload("Product.Category").Preload("Product").First(&priceListItem, priceListItem.ID)
+	
 	c.JSON(http.StatusOK, gin.H{"message": "Price list item created successfully", "price_list_item": priceListItem})
 }
 
 func GetPriceListItems(c *gin.Context) {
 	var priceListItems []models.Pricelist
-	if err := config.DB.Find(&priceListItems).Error; err != nil {
+	if err := config.DB.Preload("Product.Category").Preload("Product").Find(&priceListItems).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve price list items"})
 		return
 	}
@@ -51,7 +54,7 @@ func GetPriceListItemByID(c *gin.Context) {
 	id := c.Param("id")
 	var priceListItem models.Pricelist
 
-	if err := config.DB.First(&priceListItem, id).Error; err != nil {
+	if err := config.DB.Preload("Product.Category").Preload("Product").First(&priceListItem, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Price list item not found"})
 		return
 	}
@@ -87,6 +90,9 @@ func UpdatePriceListItem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update price list item"})
 		return
 	}
+
+	// Reload price list item with product and category
+	config.DB.Preload("Product.Category").Preload("Product").First(&priceListItem, id)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Price list item updated successfully", "price_list_item": priceListItem})
 }

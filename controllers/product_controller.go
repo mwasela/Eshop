@@ -34,12 +34,15 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 	
+	// Reload product with category
+	config.DB.Preload("Category").First(&product, product.ID)
+	
 	c.JSON(http.StatusOK, gin.H{"message": "Product created successfully", "product": product})
 }
 
 func GetProducts(c *gin.Context) {
 	var products []models.Product
-	if err := config.DB.Find(&products).Error; err != nil {
+	if err := config.DB.Preload("Category").Find(&products).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve products"})
 		return
 	}
@@ -51,7 +54,7 @@ func GetProductByID(c *gin.Context) {
 	id := c.Param("id")
 	var product models.Product
 
-	if err := config.DB.First(&product, id).Error; err != nil {
+	if err := config.DB.Preload("Category").First(&product, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
 		return
 	}

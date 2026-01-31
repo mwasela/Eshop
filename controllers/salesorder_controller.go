@@ -36,12 +36,15 @@ func CreateSalesOrder(c *gin.Context) {
 		return
 	}
 	
+	// Reload sales order with customer
+	config.DB.Preload("Customer").First(&salesOrder, salesOrder.ID)
+	
 	c.JSON(http.StatusOK, gin.H{"message": "Sales order created successfully", "sales_order": salesOrder})
 }
 
 func GetSalesOrders(c *gin.Context) {
 	var salesOrders []models.SalesOrder
-	if err := config.DB.Find(&salesOrders).Error; err != nil {
+	if err := config.DB.Preload("Customer").Find(&salesOrders).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve sales orders"})
 		return
 	}
@@ -53,7 +56,7 @@ func GetSalesOrderByID(c *gin.Context) {
 	id := c.Param("id")
 	var salesOrder models.SalesOrder
 
-	if err := config.DB.First(&salesOrder, id).Error; err != nil {
+	if err := config.DB.Preload("Customer").First(&salesOrder, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Sales order not found"})
 		return
 	}
@@ -93,6 +96,9 @@ func UpdateSalesOrder(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update sales order"})
 		return
 	}
+
+	// Reload sales order with customer
+	config.DB.Preload("Customer").First(&salesOrder, id)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Sales order updated successfully", "sales_order": salesOrder})
 }

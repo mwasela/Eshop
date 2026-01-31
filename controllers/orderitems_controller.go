@@ -36,12 +36,15 @@ func CreateOrderItem(c *gin.Context) {
 		return
 	}
 	
+	// Reload order item with product and category
+	config.DB.Preload("Product.Category").Preload("Product").First(&orderItem, orderItem.ID)
+	
 	c.JSON(http.StatusOK, gin.H{"message": "Order item created successfully", "order_item": orderItem})
 }
 
 func GetOrderItems(c *gin.Context) {
 	var orderItems []models.OrderItem
-	if err := config.DB.Find(&orderItems).Error; err != nil {
+	if err := config.DB.Preload("Product.Category").Preload("Product").Find(&orderItems).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve order items"})
 		return
 	}
@@ -54,7 +57,7 @@ func GetOrderItemByID(c *gin.Context) {
 	id := c.Param("id")
 	var orderItem models.OrderItem
 
-	if err := config.DB.First(&orderItem, id).Error; err != nil {
+	if err := config.DB.Preload("Product.Category").Preload("Product").First(&orderItem, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Order item not found"})
 		return
 	}
@@ -96,6 +99,9 @@ func UpdateOrderItem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update order item"})
 		return
 	}
+
+	// Reload order item with product and category
+	config.DB.Preload("Product.Category").Preload("Product").First(&orderItem, id)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Order item updated successfully", "order_item": orderItem})
 }

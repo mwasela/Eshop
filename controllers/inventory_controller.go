@@ -32,12 +32,16 @@ func CreateInventoryItem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create inventory item or bin location exists"})
 		return
 	}
+	
+	// Reload inventory item with product and category
+	config.DB.Preload("Product.Category").Preload("Product").First(&inventoryItem, inventoryItem.ID)
+	
 	c.JSON(http.StatusOK, gin.H{"message": "Inventory item created successfully", "inventory_item": inventoryItem})
 }
 
 func GetInventoryItems(c *gin.Context) {
 	var inventoryItems []models.Inventory
-	if err := config.DB.Find(&inventoryItems).Error; err != nil {
+	if err := config.DB.Preload("Product.Category").Preload("Product").Find(&inventoryItems).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve inventory items"})
 		return
 	}
@@ -50,7 +54,7 @@ func GetInventoryItemByID(c *gin.Context) {
 	id := c.Param("id")
 	var inventoryItem models.Inventory
 
-	if err := config.DB.First(&inventoryItem, id).Error; err != nil {
+	if err := config.DB.Preload("Product.Category").Preload("Product").First(&inventoryItem, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Inventory item not found"})
 		return
 	}
@@ -95,6 +99,9 @@ func UpdateInventoryItem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update inventory item"})
 		return
 	}
+
+	// Reload inventory item with product and category
+	config.DB.Preload("Product.Category").Preload("Product").First(&inventoryItem, id)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Inventory item updated successfully", "inventory_item": inventoryItem})
 }
