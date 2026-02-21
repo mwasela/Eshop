@@ -1,16 +1,29 @@
 package main
 
+
 import (
 	"Eshop/config"
 	"Eshop/controllers"
 	"Eshop/middlewares"
-
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 )
 
 func main() {
 
 	r := gin.Default()
+	// Add CORS middleware with custom settings
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return true
+		},
+		MaxAge: 12 * 60 * 60,
+	}))
 
 	// init DB
 	config.ConnectDatabase()
@@ -24,7 +37,11 @@ func main() {
 	api := r.Group("/api")
 
 	api.Use(middlewares.JWTAuth())
+
+
 	{
+		api.GET("/me", controllers.Me)
+
 		api.POST("/categories", controllers.CreateCategory)
 		api.GET("/categories", controllers.GetCategories)
 		api.GET("/categories/:id", controllers.GetCategoryByID)
