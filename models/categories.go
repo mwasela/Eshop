@@ -6,4 +6,5 @@ type Category struct {
 	gorm.Model
 	Name        string `json:"name" gorm:"column:eshop_category_name;unique;not null"`
 	Description string `json:"description" gorm:"column:eshop_category_description"`
+	Status      int    `json:"status" gorm:"column:eshop_category_status;default:1"`
 }

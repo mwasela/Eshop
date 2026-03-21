@@ -13,6 +13,7 @@ func CreateCategory(c *gin.Context) {
 	var input struct {
 		Name        string `json:"name" binding:"required"`
 		Description string `json:"description"`
+		Status      int    `json:"status"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -23,6 +24,7 @@ func CreateCategory(c *gin.Context) {
 	category := models.Category{
 		Name:        input.Name,
 		Description: input.Description,
+		Status:      input.Status,
 	}
 
 	if err := config.DB.Create(&category).Error; err != nil {
@@ -68,6 +70,7 @@ func UpdateCategory(c *gin.Context) {
 	var input struct {
 		Name        string `json:"name"`
 		Description string `json:"description"`
+		Status      int    `json:"status"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -77,7 +80,7 @@ func UpdateCategory(c *gin.Context) {
 
 	category.Name = input.Name
 	category.Description = input.Description
-
+	category.Status = input.Status
 	if err := config.DB.Save(&category).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update category"})
 		return

@@ -23,6 +23,10 @@ func ConnectDatabase() {
 		&models.Product{},
 		&models.SalesOrder{},
 		&models.Supplier{},
+		&models.Location{},
+		&models.Stores{},
+		&models.Storetype{},
+		&models.Companies{},
 	)
 
 	if err != nil {

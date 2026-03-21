@@ -9,37 +9,37 @@ import(
 )
 
 func CreateOrderItem(c *gin.Context) {
-	var input struct {
-		//generate orderid
-		OrderID     uint  `json:"order_id" binding:"required"`
-		ProductID   uint  `json:"product_id" binding:"required"`
-		Quantity    int     `json:"quantity" binding:"required"`
-		UnitPrice   float64 `json:"unit_price" binding:"required"`
-		TotalPrice  float64 `json:"total_price" binding:"required"`
-	}
+	       var input struct {
+		       OrderID     uint    `json:"order_id" binding:"required"`
+		       ProductID   uint    `json:"product_id" binding:"required"`
+		       Quantity    int     `json:"quantity" binding:"required"`
+		       UnitPrice   float64 `json:"unit_price" binding:"required"`
+	       }
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	
-	orderItem := models.OrderItem{
-		OrderID:    input.OrderID,
-		ProductID:  input.ProductID,
-		Quantity:   input.Quantity,
-		UnitPrice:  input.UnitPrice,
-		TotalPrice: input.TotalPrice,
-	}
+	       if err := c.ShouldBindJSON(&input); err != nil {
+		       c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		       return
+	       }
 
-	if err := config.DB.Create(&orderItem).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create order item"})
-		return
-	}
-	
-	// Reload order item with product and category
-	config.DB.Preload("Product.Category").Preload("Product").First(&orderItem, orderItem.ID)
-	
-	c.JSON(http.StatusOK, gin.H{"message": "Order item created successfully", "order_item": orderItem})
+	       totalPrice := float64(input.Quantity) * input.UnitPrice
+
+	       orderItem := models.OrderItem{
+		       OrderID:    input.OrderID,
+		       ProductID:  input.ProductID,
+		       Quantity:   input.Quantity,
+		       UnitPrice:  input.UnitPrice,
+		       TotalPrice: totalPrice,
+	       }
+
+	       if err := config.DB.Create(&orderItem).Error; err != nil {
+		       c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create order item"})
+		       return
+	       }
+
+	       // Reload order item with product and category
+	       config.DB.Preload("Product.Category").Preload("Product").First(&orderItem, orderItem.ID)
+
+	       c.JSON(http.StatusOK, gin.H{"message": "Order item created successfully", "order_item": orderItem})
 }
 
 func GetOrderItems(c *gin.Context) {

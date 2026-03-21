@@ -90,6 +90,32 @@ func main() {
 		api.GET("/customers/:id", controllers.GetCustomerByID)
 		api.PUT("/customers/:id", controllers.UpdateCustomer)
 		api.DELETE("/customers/:id", controllers.DeleteCustomer)
+
+		api.POST("/locations", controllers.CreateLocation)
+		api.GET("/locations", controllers.GetLocations)
+		api.GET("/locations/:id", controllers.GetLocationByID)
+		api.PUT("/locations/:id", controllers.UpdateLocation)
+		api.DELETE("/locations/:id", controllers.DeleteLocation)
+
+		api.POST("/storetypes", controllers.CreateStoretype)
+		api.GET("/storetypes", controllers.GetStoretypes)
+		api.GET("/storetypes/:id", controllers.GetStoretypeByID)
+		api.PUT("/storetypes/:id", controllers.UpdateStoretype)
+		//api.DELETE("/storetypes/:id", controllers.DeleteStoreType)	
+
+
+		api.POST("/stores", controllers.CreateStore)
+		api.GET("/stores", controllers.GetStores)
+		api.GET("/stores/:id", controllers.GetStoreByID)
+		api.PUT("/stores/:id", controllers.UpdateStore)
+		//api.DELETE("/stores/:id", controllers.DeleteStore)
+
+		api.POST("/companies", controllers.CreateCompany)
+		api.GET("/companies", controllers.GetCompanies)
+		api.GET("/companies/:id", controllers.GetCompanyByID)
+		api.PUT("/companies/:id", controllers.UpdateCompany)
+		// api.DELETE("/companies/:id", controllers.DeleteCompany)
+
 	}
 
 	r.Run(":4000") // listen and serve on 0.0.0.0:4000 (for windows "localhost:4000")
