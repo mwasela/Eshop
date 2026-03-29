@@ -116,6 +116,12 @@ func main() {
 		api.PUT("/companies/:id", controllers.UpdateCompany)
 		// api.DELETE("/companies/:id", controllers.DeleteCompany)
 
+		api.POST("/users", controllers.CreateUser)
+		api.GET("/users", controllers.GetUsers)
+		api.GET("/users/:id", controllers.GetUserByID)
+		api.PUT("/users/:id", controllers.UpdateUser)
+		// api.DELETE("/users/:id", controllers.DeleteUser)
+
 	}
 
 	r.Run(":4000") // listen and serve on 0.0.0.0:4000 (for windows "localhost:4000")
