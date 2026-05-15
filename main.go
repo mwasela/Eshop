@@ -122,6 +122,24 @@ func main() {
 		api.PUT("/users/:id", controllers.UpdateUser)
 		// api.DELETE("/users/:id", controllers.DeleteUser)
 
+
+		api.POST("/carts", controllers.CreateCart)
+		api.POST("/carts/multiple", controllers.CreateMultipleCartItems)
+		api.GET("/carts/:cart_id/items", controllers.GetCartItemsByCartID)
+		api.GET("/carts", controllers.GetCarts)
+		api.GET("/carts/:cart_id", controllers.GetCartByID)
+		api.PUT("/carts/:cart_id", controllers.UpdateCart)
+		api.DELETE("/carts/:cart_id", controllers.DeleteCart)
+
+
+
+		api.POST("/checkout", controllers.CreateCheckout)
+		api.GET("/checkout", controllers.GetCheckouts)
+		api.GET("/checkout/:id", controllers.GetCheckoutByID)
+		api.PUT("/checkout/:id", controllers.UpdateCheckout)
+		api.DELETE("/checkout/:id", controllers.DeleteCheckout)
+		api.GET("/checkout/cart/:cart_id", controllers.GetCheckoutsByCartID)
+		
 	}
 
 	r.Run(":4000") // listen and serve on 0.0.0.0:4000 (for windows "localhost:4000")

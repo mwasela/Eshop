@@ -27,6 +27,8 @@ func ConnectDatabase() {
 		&models.Stores{},
 		&models.Storetype{},
 		&models.Companies{},
+		&models.Cart{},
+		&models.Checkout{},
 	)
 
 	if err != nil {

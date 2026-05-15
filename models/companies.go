@@ -11,4 +11,7 @@ type Companies struct {
 	Status      int    `json:"status" gorm:"column:eshop_company_status;default:1"`
 }
 
+// Company is an alias for Companies for compatibility with other models
+type Company = Companies
+
 

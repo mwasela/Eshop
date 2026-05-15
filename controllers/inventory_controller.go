@@ -14,6 +14,7 @@ func CreateInventoryItem(c *gin.Context) {
 		StockQuantity  int     `json:"stock_quantity" binding:"required"`
 		Threshold   float64  `json:"threshold" binding:"required"`
 		BinLocation    string  `json:"bin_location" binding:"required"`
+		StoreID      uint  `json:"store_id" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -26,6 +27,7 @@ func CreateInventoryItem(c *gin.Context) {
 		StockQuantity: input.StockQuantity,
 		Threshold: input.Threshold,
 		BinLocation:   input.BinLocation,
+		StoreID: input.StoreID,
 	}
 	
 	if err := config.DB.Create(&inventoryItem).Error; err != nil {
@@ -76,6 +78,7 @@ func UpdateInventoryItem(c *gin.Context) {
 		StockQuantity  int     `json:"stock_quantity"`
 		Threshold   float64  `json:"threshold"`
 		BinLocation    string  `json:"bin_location"`
+		StoreID      uint  `json:"store_id"`
 	}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -95,6 +98,10 @@ func UpdateInventoryItem(c *gin.Context) {
 		inventoryItem.BinLocation = input.BinLocation
 	}
 
+	if input.StoreID != 0 {
+		inventoryItem.StoreID = input.StoreID
+	}
+	
 	if err := config.DB.Save(&inventoryItem).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update inventory item"})
 		return

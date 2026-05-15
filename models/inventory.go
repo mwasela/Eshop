@@ -9,4 +9,6 @@ type Inventory struct {
 	BinLocation         string   `json:"bin_location" gorm:"column:eshop_inventory_bin_location;unique;not null"`
 	StockQuantity     int      `json:"stock_quantity" gorm:"column:eshop_inventory_stock_quantity;not null"`
 	Threshold        float64  `json:"threshold" gorm:"column:eshop_inventory_threshold;not null"`
+	StoreID uint   `json:"store_id" gorm:"column:eshop_inventory_store_id;"`
+	Store   Stores `json:"store" gorm:"foreignKey:StoreID"`
 }
